@@ -1,5 +1,6 @@
-module AStar where
+module AStar exposing (aStar)
 
+import Array exposing (Array(..))
 import Set exposing (Set(..))
 import PairingHeap as PH
 
@@ -11,15 +12,20 @@ import PairingHeap as PH
 --    -> Set comparable
 --    -> List comparable
 aStar getNeighbors heuristic sources goals =
+  Array.toList (aStarArray getNeighbors heuristic sources goals)
+
+aStarArray getNeighbors heuristic sources goals =
     let
-        aStar' : PH.PairingHeap number (number, comparable, List comparable) -> Set comparable -> List comparable
+        --aStar' : PH.PairingHeap number (number, comparable, List comparable)
+        --    -> Set comparable
+        --    -> Array comparable
         aStar' open closed = 
-            case PH.findMin open of
+            case (PH.findMin open) of
                 Nothing ->
-                    []
+                    Array.empty
 
                 Just (cost, (dist, nextNode, partPath)) ->
-                    if Set.member (Debug.log "nextNode" nextNode) goals
+                    if Set.member nextNode goals
                        then
                           partPath
                        else
@@ -30,10 +36,11 @@ aStar getNeighbors heuristic sources goals =
                               neighbors : List comparable
                               neighbors = List.filter (\x -> not (Set.member x closed')) (getNeighbors nextNode)
 
-                              open' : PH.PairingHeap number (number, comparable, List comparable)
+                              open' : PH.PairingHeap number (number, comparable, Array comparable)
                               open' = List.foldl (\(x, d) -> 
-                                  PH.insert (dist + d + heuristic x, (dist + d, x, x::partPath))) open neighbors
+                                  PH.insert (dist + d + heuristic x, (dist + d, x, Array.push x partPath)))
+                                      (PH.deleteMin open) neighbors
                           in
-                          aStar' open' closed'
+                              aStar' open' closed'
     in
-       aStar' (PH.fromList (List.map (\x -> (heuristic x, (0, x, [x]))) sources)) Set.empty
+       aStar' (PH.fromList (List.map (\x -> (heuristic x, (0, x, Array.repeat 1 x))) sources)) Set.empty
