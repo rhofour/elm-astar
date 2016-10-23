@@ -38,6 +38,7 @@ getNeighbors2d dict ( x, y ) =
         neighbors =
             List.filter (\k -> Dict.member k dict) possibilities
     in
+        -- Every neighbor is one unit away.
         List.map (\k -> ( k, 1 )) neighbors
 
 
@@ -127,6 +128,7 @@ getNeighbors1d width n =
         neighbors =
             List.filterMap (rowColToMaybeN width) possibilities
     in
+        -- Every neighbor is one unit away.
         List.map (\k -> ( k, 1 )) neighbors
 
 
