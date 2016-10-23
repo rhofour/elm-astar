@@ -8,6 +8,13 @@ import PairingHeap as PH
 
 -- Returns a shortest path from a source node to a goal node.
 -- If a path does not exist Nothing is returned.
+-- TODO: Describe the arguments
+-- getNeighbors:
+-- heuristic: A function which takes a point and returns a value used to
+-- prioritize exploration. Often this is either the manhattan or euclidean
+-- distance to a goal. This must satisfy the triangle inequality.
+-- sources: A list of inital points to start from
+-- goals: A set of goals
 --aStar :
 --    (comparable -> List ( comparable, number ))
 --    -> (comparable -> number)
@@ -21,6 +28,10 @@ aStar getNeighbors heuristic sources goals =
 
 
 
+-- NOTE: Uncommenting this will give a type error about not matching the
+-- inferred type despite the inferred type being exactly this.
+-- NOTE2: If you uncomment the type annotation for aStar' the inferred type
+-- annotation here changes.
 --aStarArray :
 --    (comparable -> List ( comparable, number ))
 --    -> (comparable -> number)
@@ -31,9 +42,10 @@ aStar getNeighbors heuristic sources goals =
 
 aStarArray getNeighbors heuristic sources goals =
     let
-        --aStar' : PH.PairingHeap number (number, comparable, List comparable)
-        --    -> Set comparable
-        --    -> Maybe (Array comparable)
+        aStar' :
+            PH.PairingHeap number ( number, comparable, Array comparable )
+            -> Set comparable
+            -> Maybe (Array comparable)
         aStar' open closed =
             case (PH.findMin open) of
                 Nothing ->
