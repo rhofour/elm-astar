@@ -4,6 +4,7 @@ import Array exposing (Array(..))
 import Maybe exposing (Maybe(..))
 import Set exposing (Set(..))
 import PairingHeap as PH
+import Debug exposing (log)
 
 
 -- Returns a shortest path from a source node to a goal node.
@@ -42,7 +43,10 @@ aStar' getNeighbors heuristic sources goals open closed =
             Nothing
 
         Just ( cost, ( dist, nextNode, partPath ) ) ->
-            if Set.member nextNode goals then
+            if Set.member nextNode closed then
+                -- Ignore if we already explored this node
+                aStar' getNeighbors heuristic sources goals (PH.deleteMin open) closed
+            else if Set.member nextNode goals then
                 Just partPath
             else
                 let
@@ -50,9 +54,9 @@ aStar' getNeighbors heuristic sources goals open closed =
                     closed' =
                         Set.insert nextNode closed
 
-                    neighbors : List comparable
+                    neighbors : List ( comparable, number )
                     neighbors =
-                        List.filter (\x -> not (Set.member x closed')) (getNeighbors nextNode)
+                        List.filter (\( x, _ ) -> not (Set.member x closed')) (getNeighbors nextNode)
 
                     open' : PH.PairingHeap number ( number, comparable, Array comparable )
                     open' =
