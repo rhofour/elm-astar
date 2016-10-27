@@ -6,7 +6,7 @@
     "source-directories": [
         "./src"
     ],
-    "exposed-modules": [],
+    "exposed-modules": ["AStar"],
     "dependencies": {
         "elm-lang/core": "4.0.0 <= v < 5.0.0",
         "rhofour/elm-pairing-heap": "1.0.2 <= v < 2.0.0"

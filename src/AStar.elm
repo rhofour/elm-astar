@@ -1,5 +1,16 @@
 module AStar exposing (aStar, aStarArray)
 
+{-| This module contains an implementation of the
+[A* pathfinding algorithm](https://en.wikipedia.org/wiki/A*_search_algorithm).
+The tests are likely the best place to see how it is used.
+
+# Convenience function
+@docs aStar
+
+# For more performance
+@docs aStarArray
+-}
+
 import Array exposing (Array(..))
 import Maybe exposing (Maybe(..))
 import Set exposing (Set(..))
@@ -7,18 +18,21 @@ import PairingHeap as PH
 import Debug exposing (log)
 
 
--- Returns a shortest path from a source node to a goal node.
--- If a path does not exist Nothing is returned.
--- TODO: Describe the arguments
--- getNeighbors: A function which given a node returns a list of tuples with
--- both that node's neighbors and their distance from that node.
--- heuristic: A function which takes a point and returns a value used to
--- prioritize exploration. Often this is either the manhattan or euclidean
--- distance to a goal. This must satisfy the triangle inequality.
--- sources: A list of inital points to start from
--- goals: A set of goals
+{-|
+    aStar getNeighbors heuristic sources goals
 
+Returns a shortest path from a source node to a goal node.
+If a path does not exist `Nothing` is returned.
 
+Arguments:
+* getNeighbors: A function which given a node returns a list of tuples with
+both that node's neighbors and their distance from that node.
+* heuristic: A function which takes a point and returns a value used to
+prioritize exploration. Often this is either the manhattan or euclidean
+distance to a goal. This function must be [admissable](https://en.wikipedia.org/wiki/Admissible_heuristic).
+* sources: A list of inital points to start from
+* goals: A set of goals
+-}
 aStar :
     (comparable -> List ( comparable, number ))
     -> (comparable -> number)
@@ -70,6 +84,9 @@ aStar' getNeighbors heuristic sources goals open closed =
                     aStar' getNeighbors heuristic sources goals open' closed'
 
 
+{-| Works identically to [`aStar`](aStar) except it return the underlying
+`Array` used rather than converting it into a `List`.
+-}
 aStarArray :
     (comparable -> List ( comparable, number ))
     -> (comparable -> number)
